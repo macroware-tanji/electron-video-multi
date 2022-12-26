@@ -1,0 +1,43 @@
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <!-- https://developer.mozilla.org/ja/docs/Web/HTTP/CSP -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src ws: http:; img-src data: 'self'"/>
+  <link rel=”stylesheet” href=”style.css”/>
+  <title>初めてのElectron</title>
+</head>
+
+<body>
+<h1>初めてのElectron</h1>
+  <p>
+    We are using Node.js <span id="node-version"></span>,<br />
+    Chromium <span id="chrome-version"></span>,<br />
+    and Electron <span id="electron-version"></span>.
+  </p>
+  <div>socket.io signaling for multi-party (trickle ICE)</div>
+  <div>
+    <button type="button" onclick="startVideo();">Start Video</button>
+    <button type="button" onclick="stopVideo();">Stop Video</button>
+    <button type="button" onclick="connect();">Connect</button>
+    <button type="button" onclick="hangUp();">Hang Up</button> 
+    <button type="button" onclick="startCapture()">Start Capture</button>&nbsp;
+  </div>
+  <div id="thumbnail"></div>
+  <div>
+    <video id="local_video" autoplay></video>
+  </div>
+  <div id="container"></div>
+  <!--
+  <p>SDP to send:<br />
+    <textarea id="text_for_send_sdp" rows="5" cols="60" readonly="readonly">SDP to send</textarea>
+  </p>
+  <p>SDP received:&nbsp;
+    <button type="button" onclick="onSdpText();">Receive remote SDP</button>
+    <br />
+    <textarea id="text_for_receive_sdp" rows="5" cols="60"></textarea>
+  </p>
+  -->
+  <script src="socket.io.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>
