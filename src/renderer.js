@@ -5,7 +5,7 @@ let localStream = null;
 //let textForSendSdp = document.getElementById('text_for_send_sdp');
 //let textToReceiveSdp = document.getElementById('text_for_receive_sdp');
 const thumbnailElem = document.getElementById("thumbnail");
-
+const thumbnailDialog = document.getElementById('thumbnail-dialog');
 // ---- for multi party -----
 let peerConnections = [];
 //let remoteStreams = [];
@@ -283,6 +283,33 @@ socket.on('message', function(message) {
       });      
     }
   }
+
+  thumbnailDialog.addEventListener('close', async (event) => {
+    try {
+      const displayMediaOptions={
+          audio: false,
+          video: {
+            mandatory: {
+              chromeMediaSource: 'desktop',
+              chromeMediaSourceId: event.target.returnValue,
+              minWidth: 1280,
+              maxWidth: 1280,
+              minHeight: 720,
+              maxHeight: 720
+            }
+          }
+      }
+      const stream = await navigator.mediaDevices.getUserMedia(displayMediaOptions)
+
+      localStream = stream
+      //window.setLocalStream(stream)
+
+      playVideo(localVideo,stream)
+    } catch (e) {
+      handleError(e)
+    }
+  });
+
   async function startCapture() {
     //logElem.innerHTML = "";
     thumbnailElem.innerHTML = ""
@@ -295,34 +322,37 @@ socket.on('message', function(message) {
 
         const image = document.createElement('img');
         image.src = source.thumbnail.toDataURL()
+        image.addEventListener('click',async ()=>{
+          // try {
+          //   const displayMediaOptions={
+          //       audio: false,
+          //       video: {
+          //         mandatory: {
+          //           chromeMediaSource: 'desktop',
+          //           chromeMediaSourceId: source.id,
+          //           minWidth: 1280,
+          //           maxWidth: 1280,
+          //           minHeight: 720,
+          //           maxHeight: 720
+          //         }
+          //       }
+          //   }
+          //   const stream = await navigator.mediaDevices.getUserMedia(displayMediaOptions)
+    
+          //   localStream = stream
+          //   //window.setLocalStream(stream)
+    
+          //   playVideo(localVideo,stream)
+          // } catch (e) {
+          //   handleError(e)
+          // }
+          thumbnailDialog.close(source.id);
+        })
         //thumbnailElem.innerHTML += `<img src="${source.thumbnail.toDataURL()}"/>`;
         thumbnailElem.appendChild(image)
     }
     console.log(names)
-
-    try {
-        const displayMediaOptions={
-            audio: false,
-            video: {
-              mandatory: {
-                chromeMediaSource: 'desktop',
-                chromeMediaSourceId: sources[0].id,
-                minWidth: 1280,
-                maxWidth: 1280,
-                minHeight: 720,
-                maxHeight: 720
-              }
-            }
-        }
-        const stream = await navigator.mediaDevices.getUserMedia(displayMediaOptions)
-
-        localStream = stream
-        //window.setLocalStream(stream)
-
-        playVideo(localVideo,stream)
-    } catch (e) {
-        handleError(e)
-    }
+    thumbnailDialog.showModal()
   }
   
   function handleError (e) {
